@@ -9,5 +9,5 @@ public interface Command<T> {
     /**
      * @throws RedisErrorException
      */
-    public fun parseResponse(type: RedisType): T
+    public fun resp(type: RedisType): T
 }
