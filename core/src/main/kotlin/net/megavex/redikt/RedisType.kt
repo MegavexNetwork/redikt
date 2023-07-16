@@ -1,4 +1,4 @@
-package net.megavex.redikt.protocol
+package net.megavex.redikt
 
 public sealed interface RedisType {
     public data class SimpleString internal constructor(public val value: String) : RedisType
@@ -32,4 +32,12 @@ public sealed interface RedisType {
     }
 
     public data class Array<T : RedisType> internal constructor(public val elements: List<T>) : RedisType
+}
+
+public fun ByteArray.toBulkString(): RedisType.BulkString {
+    return RedisType.BulkString(this)
+}
+
+public fun String.toBulkString(): RedisType.BulkString {
+    return encodeToByteArray().toBulkString()
 }

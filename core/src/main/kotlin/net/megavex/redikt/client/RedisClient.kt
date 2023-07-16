@@ -10,8 +10,8 @@ import java.net.SocketException
 
 /**
  * A connection to a Redis server.
- * All calls to [execute] are guaranteed to be ran on the same client.
- * If the connection is lost or closed with [close], all calls to [execute] will start throwing [RedisConnectionException].
+ * All calls to [exec] are guaranteed to be ran on the same client.
+ * If the connection is lost or closed with [close], all calls to [exec] will start throwing [RedisConnectionException].
  */
 public interface RedisClient : RedisExecutor {
     public companion object {

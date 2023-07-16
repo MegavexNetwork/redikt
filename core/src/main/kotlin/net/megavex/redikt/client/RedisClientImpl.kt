@@ -23,7 +23,7 @@ internal class RedisClientImpl internal constructor(
 
     private var closedException: Throwable? = null
 
-    override suspend fun <T> execute(command: Command<T>): T = mutex.withLock {
+    override suspend fun <T> exec(command: Command<T>): T = mutex.withLock {
         closedException?.let { throw RedisConnectionException(it) }
 
         try {
