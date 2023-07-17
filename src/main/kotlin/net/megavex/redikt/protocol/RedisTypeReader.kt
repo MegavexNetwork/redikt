@@ -34,24 +34,31 @@ internal object RedisTypeReader {
 
     private suspend fun readInteger(reader: ByteReader): Int {
         var value = 0
+        var multiplier = 1
+        var i = 0
 
         while (true) {
             val c = reader.readAsciiChar()
+            if (i == 0 && c == '-') {
+                multiplier = -1
+                continue
+            }
+
             if (c == '\r') {
                 reader.discard(1) // \n
                 break
             }
 
             value = (value * 10) + (c - '0')
+            i++
         }
 
-        return value
+        return value * multiplier
     }
 
     private suspend fun readBulkString(reader: ByteReader): ByteArray? {
         val length = readInteger(reader)
         if (length == -1) {
-            reader.discard(2) // \r\n
             return null
         }
 
