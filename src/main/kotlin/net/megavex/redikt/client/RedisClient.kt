@@ -16,7 +16,7 @@ public suspend fun RedisClient(selectorManager: SelectorManager, endpoint: Redis
     val builder = aSocket(selectorManager).tcp()
 
     val socket = try {
-        builder.connect(endpoint.address, endpoint.port)
+        builder.connect(endpoint.host, endpoint.port)
     } catch (e: SocketException) {
         throw RedisConnectionException(e)
     }
