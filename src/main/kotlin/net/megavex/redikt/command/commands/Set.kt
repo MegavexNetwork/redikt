@@ -29,22 +29,11 @@ public fun set(
 
     response { type ->
         when (type) {
-            is RedisType.SimpleString -> {
-                return@response true
-            }
-
-            is RedisType.BulkString -> {
-                if (type.isNull) {
-                    return@response false
-                }
-            }
-
+            is RedisType.SimpleString -> true
+            is RedisType.NullBulkString -> false
             is RedisType.Error -> throw RedisErrorException(type)
-
-            else -> {}
+            else -> error("unexpected SET response: $type")
         }
-
-        error("unexpected SET response: $type")
     }
 }
 
@@ -58,7 +47,7 @@ public fun setAndGet(
     value: RedisType.BulkString,
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
-): Command<RedisType.BulkString> = command {
+): Command<RedisType.BulkString?> = command {
     arguments {
         add("SET")
         add(key)
@@ -69,6 +58,11 @@ public fun setAndGet(
     }
 
     response { type ->
-        type as? RedisType.BulkString ?: error("unexpected SET response: $type")
+        when (type) {
+            is RedisType.BulkString -> type
+            is RedisType.NullBulkString -> null
+            is RedisType.Error -> throw RedisErrorException(type)
+            else -> error("unexpected SET response: $type")
+        }
     }
 }

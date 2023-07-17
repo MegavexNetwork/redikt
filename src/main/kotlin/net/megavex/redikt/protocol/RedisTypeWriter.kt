@@ -17,16 +17,12 @@ internal object RedisTypeWriter {
         value.toString().forEach { writer.writeAsciiChar(it) }
     }
 
-    private suspend fun writeBulkString(writer: ByteWriter, value: ByteArray?) {
+    private suspend fun writeBulkString(writer: ByteWriter, value: ByteArray) {
         writer.writeAsciiChar(ProtocolConstants.BULK_STRING)
 
-        if (value != null) {
-            writeInteger(writer, value.size)
-            writeCrlf(writer)
-            writer.writeBytes(value)
-        } else {
-            writeInteger(writer, -1)
-        }
+        writeInteger(writer, value.size)
+        writeCrlf(writer)
+        writer.writeBytes(value)
 
         writeCrlf(writer)
     }

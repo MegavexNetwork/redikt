@@ -10,7 +10,7 @@ import net.megavex.redikt.protocol.RedisType
  *
  * @see [GET documentation](https://redis.io/commands/get/)
  */
-public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = command {
+public fun get(key: RedisType.BulkString): Command<RedisType.BulkString?> = command {
     arguments(2) {
         add("GET")
         add(key)
@@ -19,6 +19,7 @@ public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = comma
     response { type ->
         when (type) {
             is RedisType.BulkString -> return@response type
+            is RedisType.NullBulkString -> return@response null
             is RedisType.Error -> throw RedisErrorException(type)
             else -> error("unexpected GET response: $type")
         }

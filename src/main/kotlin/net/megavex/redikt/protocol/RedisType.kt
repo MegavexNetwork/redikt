@@ -15,21 +15,20 @@ public sealed interface RedisType {
     @JvmInline
     public value class Integer internal constructor(public val value: Int) : RedisType
 
-    @JvmInline
-    public value class BulkString internal constructor(internal val value: ByteArray?) : RedisType {
-        public val isNull: Boolean
-            get() = value == null
+    public data object NullBulkString : RedisType
 
-        public fun asBytes(): ByteArray? {
-            return value?.copyOf()
+    @JvmInline
+    public value class BulkString internal constructor(internal val value: ByteArray) : RedisType {
+        public fun asBytes(): ByteArray {
+            return value.copyOf()
         }
 
-        public fun asString(): String? {
-            return value?.decodeToString()
+        public fun asString(): String {
+            return value.decodeToString()
         }
 
         public operator fun get(index: Int): Byte {
-            return value?.get(index) ?: 0
+            return value.get(index)
         }
 
         override fun toString(): String {

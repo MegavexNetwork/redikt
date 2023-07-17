@@ -10,7 +10,15 @@ internal object RedisTypeReader {
             ProtocolConstants.SIMPLE_STRING -> RedisType.SimpleString(readSimpleString(reader))
             ProtocolConstants.ERROR -> RedisType.Error(readSimpleString(reader))
             ProtocolConstants.INTEGER -> RedisType.Integer(readInteger(reader))
-            ProtocolConstants.BULK_STRING -> RedisType.BulkString(readBulkString(reader))
+            ProtocolConstants.BULK_STRING -> {
+                val value = readBulkString(reader)
+                if (value != null) {
+                    RedisType.BulkString(value)
+                } else {
+                    RedisType.NullBulkString
+                }
+            }
+
             ProtocolConstants.ARRAY -> RedisType.Array(readArray(reader))
             else -> throw RedisProtocolException("unknown redis type '$type'")
         }
