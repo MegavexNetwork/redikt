@@ -1,7 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm") version "1.9.0"
+    `maven-publish`
 }
 
 group = "net.megavex"
@@ -22,4 +21,8 @@ tasks.test {
 
 kotlin {
     jvmToolchain(17)
+}
+
+publishing.publications.create<MavenPublication>("maven") {
+    from(components["java"])
 }
