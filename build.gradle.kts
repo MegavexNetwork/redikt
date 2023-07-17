@@ -4,28 +4,22 @@ plugins {
     kotlin("jvm") version "1.9.0"
 }
 
-allprojects {
-    group = "net.megavex"
-    version = "1.0.0-SNAPSHOT"
+group = "net.megavex"
+version = "1.0.0-SNAPSHOT"
 
-    repositories {
-        mavenCentral()
-    }
+repositories {
+    mavenCentral()
 }
 
-subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+dependencies {
+    api("io.ktor:ktor-network:2.3.2")
+    testImplementation(kotlin("test"))
+}
 
-    dependencies {
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
-        testImplementation(kotlin("test"))
-    }
+tasks.test {
+    useJUnitPlatform()
+}
 
-    tasks.test {
-        useJUnitPlatform()
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
