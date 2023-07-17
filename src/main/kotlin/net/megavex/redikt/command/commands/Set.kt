@@ -5,6 +5,7 @@ import net.megavex.redikt.command.command
 import net.megavex.redikt.command.types.ExistenceModifier
 import net.megavex.redikt.command.types.ExpiryOption
 import net.megavex.redikt.command.types.apply
+import net.megavex.redikt.exception.RedisErrorException
 import net.megavex.redikt.protocol.RedisType
 
 public fun set(
@@ -32,6 +33,8 @@ public fun set(
                     return@response false
                 }
             }
+
+            is RedisType.Error -> throw RedisErrorException(type)
 
             else -> {}
         }

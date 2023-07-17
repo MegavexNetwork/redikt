@@ -1,8 +1,9 @@
 package net.megavex.redikt.command.commands
 
-import net.megavex.redikt.protocol.RedisType
 import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
+import net.megavex.redikt.exception.RedisErrorException
+import net.megavex.redikt.protocol.RedisType
 
 public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = command {
     arguments(2) {
@@ -11,6 +12,10 @@ public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = comma
     }
 
     response { type ->
-        type as? RedisType.BulkString ?: error("unexpected GET response: $type")
+        when (type) {
+            is RedisType.BulkString -> return@response type
+            is RedisType.Error -> throw RedisErrorException(type)
+            else -> error("unexpected GET response: $type")
+        }
     }
 }
