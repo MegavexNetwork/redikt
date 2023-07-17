@@ -1,6 +1,6 @@
 package net.megavex.redikt.command.commands
 
-import net.megavex.redikt.RedisType
+import net.megavex.redikt.protocol.RedisType
 import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
 

@@ -5,7 +5,7 @@ import net.megavex.redikt.command.command
 import net.megavex.redikt.command.types.ExistenceModifier
 import net.megavex.redikt.command.types.ExpiryOption
 import net.megavex.redikt.command.types.apply
-import net.megavex.redikt.RedisType
+import net.megavex.redikt.protocol.RedisType
 
 public fun set(
     key: RedisType.BulkString,
@@ -28,7 +28,7 @@ public fun set(
             }
 
             is RedisType.BulkString -> {
-                if (type.value == null) {
+                if (type.isNull) {
                     return@resp false
                 }
             }

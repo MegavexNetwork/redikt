@@ -1,6 +1,5 @@
 package net.megavex.redikt.protocol
 
-import net.megavex.redikt.RedisType
 import net.megavex.redikt.buffer.ByteReader
 
 internal object RedisTypeReader {

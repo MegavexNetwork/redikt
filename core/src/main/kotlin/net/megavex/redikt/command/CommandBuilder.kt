@@ -1,6 +1,6 @@
 package net.megavex.redikt.command
 
-import net.megavex.redikt.RedisType
+import net.megavex.redikt.protocol.RedisType
 
 public fun <T> command(block: CommandBuilder<T>.() -> Unit): Command<T> {
     val builder = CommandBuilder<T>()
