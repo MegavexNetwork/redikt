@@ -8,6 +8,11 @@ import net.megavex.redikt.command.types.apply
 import net.megavex.redikt.exception.RedisErrorException
 import net.megavex.redikt.protocol.RedisType
 
+/**
+ * Wrapper for the `SET` command.
+ *
+ * @see [SET documentation](https://redis.io/commands/set/)
+ */
 public fun set(
     key: RedisType.BulkString,
     value: RedisType.BulkString,
@@ -43,6 +48,11 @@ public fun set(
     }
 }
 
+/**
+ * Wrapper for the `SET` command with the `GET` option.
+ *
+ * @see [SET documentation](https://redis.io/commands/set/)
+ */
 public fun setAndGet(
     key: RedisType.BulkString,
     value: RedisType.BulkString,

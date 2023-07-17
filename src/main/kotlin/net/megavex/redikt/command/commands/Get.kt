@@ -5,6 +5,11 @@ import net.megavex.redikt.command.command
 import net.megavex.redikt.exception.RedisErrorException
 import net.megavex.redikt.protocol.RedisType
 
+/**
+ * Wrapper for the `GET` command.
+ *
+ * @see [GET documentation](https://redis.io/commands/get/)
+ */
 public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = command {
     arguments(2) {
         add("GET")

@@ -4,6 +4,12 @@ import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
 import net.megavex.redikt.protocol.RedisType
 
+/**
+ * Wrapper for the `FCALL` and `FCALL_RO` commands.
+ *
+ * @see [FCALL documentation](https://redis.io/commands/fcall/)
+ * @see [FCALL_RO documentation](https://redis.io/commands/fcall_ro/)
+ */
 public fun functionCall(
     function: String,
     keys: Collection<String> = emptyList(),

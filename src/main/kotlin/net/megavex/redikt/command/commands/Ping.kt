@@ -19,6 +19,11 @@ private val pingCommand = command {
     }
 }
 
+/**
+ * Wrapper for the `PING` command.
+ *
+ * @see [PING documentation](https://redis.io/commands/ping/)
+ */
 public fun ping(): Command<RedisType.SimpleString> {
     return pingCommand
 }
