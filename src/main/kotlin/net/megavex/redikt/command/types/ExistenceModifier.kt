@@ -6,6 +6,6 @@ public enum class ExistenceModifier {
     NX, XX
 }
 
-internal fun ExistenceModifier.apply(builder: CommandBuilder.ArgsBuilder) {
+internal fun ExistenceModifier.apply(builder: CommandBuilder.ArgumentsBuilder) {
     builder.add(name)
 }

@@ -31,6 +31,7 @@ public suspend fun RedisClient(selectorManager: SelectorManager, endpoint: Redis
 public interface RedisClient : RedisExecutor {
     /**
      * Whether the connection is active.
+     * Becomes false when the connection is lost or closed with [close].
      */
     public val isConnected: Boolean
 

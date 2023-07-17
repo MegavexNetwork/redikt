@@ -27,7 +27,7 @@ internal class RedisClientImpl(private val socket: Socket) : RedisClient {
         closedException?.let { throw RedisConnectionException(it) }
 
         try {
-            RedisTypeWriter.write(KtorByteWriter(writer), command.args)
+            RedisTypeWriter.write(KtorByteWriter(writer), command.arguments)
         } catch (e: IOException) {
             closeWithException(e)
             throw RedisConnectionException(e)
@@ -42,7 +42,7 @@ internal class RedisClientImpl(private val socket: Socket) : RedisClient {
             throw RedisConnectionException(e)
         }
 
-        command.resp(response)
+        command.response(response)
     }
 
     override suspend fun close() = mutex.withLock {

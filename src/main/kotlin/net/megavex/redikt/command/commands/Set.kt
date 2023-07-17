@@ -13,7 +13,7 @@ public fun set(
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
 ): Command<Boolean> = command {
-    args {
+    arguments {
         add("SET")
         add(key)
         add(value)
@@ -21,15 +21,15 @@ public fun set(
         expiry?.apply(this)
     }
 
-    resp { type ->
+    response { type ->
         when (type) {
             is RedisType.SimpleString -> {
-                return@resp true
+                return@response true
             }
 
             is RedisType.BulkString -> {
                 if (type.isNull) {
-                    return@resp false
+                    return@response false
                 }
             }
 
@@ -46,7 +46,7 @@ public fun setAndGet(
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
 ): Command<RedisType.BulkString> = command {
-    args {
+    arguments {
         add("SET")
         add(key)
         add(value)
@@ -55,7 +55,7 @@ public fun setAndGet(
         expiry?.apply(this)
     }
 
-    resp { type ->
+    response { type ->
         type as? RedisType.BulkString ?: error("unexpected SET response: $type")
     }
 }

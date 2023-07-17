@@ -2,6 +2,9 @@ package net.megavex.redikt.command
 
 import net.megavex.redikt.protocol.RedisType
 
+/**
+ * DSL builder for [Command]s.
+ */
 public fun <T> command(block: CommandBuilder<T>.() -> Unit): Command<T> {
     val builder = CommandBuilder<T>()
     block(builder)
@@ -9,24 +12,24 @@ public fun <T> command(block: CommandBuilder<T>.() -> Unit): Command<T> {
 }
 
 public class CommandBuilder<T> {
-    private lateinit var args: List<RedisType.BulkString>
-    private lateinit var resp: (RedisType) -> T
+    private lateinit var arguments: List<RedisType.BulkString>
+    private lateinit var responseImpl: (RedisType) -> T
 
-    public fun args(capacity: Int = 4, init: ArgsBuilder.() -> Unit) {
-        val builder = ArgsBuilder(capacity)
+    public fun arguments(capacity: Int = 4, init: ArgumentsBuilder.() -> Unit) {
+        val builder = ArgumentsBuilder(capacity)
         init(builder)
-        args = builder.build()
+        arguments = builder.build()
     }
 
-    public fun resp(resp: (RedisType) -> T) {
-        this.resp = resp
+    public fun response(response: (RedisType) -> T) {
+        this.responseImpl = response
     }
 
     internal fun build(): Command<T> {
-        return CommandImpl(RedisType.Array(args), resp)
+        return CommandImpl(RedisType.Array(arguments), responseImpl)
     }
 
-    public class ArgsBuilder(capacity: Int) {
+    public class ArgumentsBuilder(capacity: Int) {
         private val args = ArrayList<RedisType.BulkString>(capacity)
 
         public fun add(value: RedisType.BulkString) {
@@ -48,10 +51,10 @@ public class CommandBuilder<T> {
 }
 
 private class CommandImpl<T>(
-    override val args: RedisType.Array<RedisType.BulkString>,
-    val respImpl: (RedisType) -> T
+    override val arguments: RedisType.Array<RedisType.BulkString>,
+    val responseImpl: (RedisType) -> T
 ) : Command<T> {
-    override fun resp(type: RedisType): T {
-        return respImpl(type)
+    override fun response(type: RedisType): T {
+        return responseImpl(type)
     }
 }

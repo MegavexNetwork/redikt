@@ -5,12 +5,12 @@ import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
 
 public fun get(key: RedisType.BulkString): Command<RedisType.BulkString> = command {
-    args(2) {
+    arguments(2) {
         add("GET")
         add(key)
     }
 
-    resp { type ->
+    response { type ->
         type as? RedisType.BulkString ?: error("unexpected GET response: $type")
     }
 }

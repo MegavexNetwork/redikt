@@ -10,7 +10,7 @@ public sealed interface ExpiryOption {
     public object KeepTtl : ExpiryOption
 }
 
-internal fun ExpiryOption.apply(builder: CommandBuilder.ArgsBuilder) {
+internal fun ExpiryOption.apply(builder: CommandBuilder.ArgumentsBuilder) {
     when (this) {
         is ExpiryOption.Duration -> {
             builder.add("PX")

@@ -3,11 +3,19 @@ package net.megavex.redikt.command
 import net.megavex.redikt.exception.RedisErrorException
 import net.megavex.redikt.protocol.RedisType
 
+/**
+ * Represents a Redis command.
+ */
 public interface Command<T> {
-    public val args: RedisType.Array<RedisType.BulkString>
+    /**
+     * The arguments of the command, including its name.
+     */
+    public val arguments: RedisType.Array<RedisType.BulkString>
 
     /**
-     * @throws RedisErrorException
+     * Transforms the Redis server response of the [arguments] into type [T].
+     *
+     * @throws RedisErrorException if [type] is a [RedisType.Error] and couldn't be handled
      */
-    public fun resp(type: RedisType): T
+    public fun response(type: RedisType): T
 }
