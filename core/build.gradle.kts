@@ -5,5 +5,5 @@ kotlin {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-network:2.3.2")
+    api("io.ktor:ktor-network:2.3.2")
 }

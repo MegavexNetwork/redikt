@@ -6,18 +6,18 @@ import net.megavex.redikt.buffer.ByteReader
 internal object RedisTypeReader {
     class RedisProtocolException(override val message: String?) : Exception()
 
-    suspend fun read(reader: ByteReader): Result<RedisType> {
+    suspend fun read(reader: ByteReader): RedisType {
         return when (val type = reader.readAsciiChar()) {
-            ProtocolConstants.SIMPLE_STRING -> readSimpleString(reader).map { RedisType.SimpleString(it) }
-            ProtocolConstants.ERROR -> readSimpleString(reader).map { RedisType.Error(it) }
-            ProtocolConstants.INTEGER -> readInteger(reader).map { RedisType.Integer(it) }
-            ProtocolConstants.BULK_STRING -> readBulkString(reader).map { RedisType.BulkString(it) }
-            ProtocolConstants.ARRAY -> readArray(reader).map { RedisType.Array(it) }
-            else -> return Result.failure(RedisProtocolException("unknown redis type '$type'"))
+            ProtocolConstants.SIMPLE_STRING -> RedisType.SimpleString(readSimpleString(reader))
+            ProtocolConstants.ERROR -> RedisType.Error(readSimpleString(reader))
+            ProtocolConstants.INTEGER -> RedisType.Integer(readInteger(reader))
+            ProtocolConstants.BULK_STRING -> RedisType.BulkString(readBulkString(reader))
+            ProtocolConstants.ARRAY -> RedisType.Array(readArray(reader))
+            else -> throw RedisProtocolException("unknown redis type '$type'")
         }
     }
 
-    private suspend fun readSimpleString(reader: ByteReader): Result<String> {
+    private suspend fun readSimpleString(reader: ByteReader): String {
         val builder = StringBuilder(8)
 
         while (true) {
@@ -30,10 +30,10 @@ internal object RedisTypeReader {
             builder.append(c)
         }
 
-        return Result.success(builder.toString())
+        return builder.toString()
     }
 
-    private suspend fun readInteger(reader: ByteReader): Result<Int> {
+    private suspend fun readInteger(reader: ByteReader): Int {
         var value = 0
 
         while (true) {
@@ -46,30 +46,30 @@ internal object RedisTypeReader {
             value = (value * 10) + (c - '0')
         }
 
-        return Result.success(value)
+        return value
     }
 
-    private suspend fun readBulkString(reader: ByteReader): Result<ByteArray?> {
-        val length = readInteger(reader).getOrElse { return Result.failure(it) }
+    private suspend fun readBulkString(reader: ByteReader): ByteArray? {
+        val length = readInteger(reader)
         if (length == -1) {
             reader.discard(2) // \r\n
-            return Result.success(null)
+            return null
         }
 
         if (length > ProtocolConstants.MAX_BULK_STRING_SIZE) {
-            return Result.failure(RedisProtocolException("bulk string too long: $length bytes (max ${ProtocolConstants.MAX_BULK_STRING_SIZE})"))
+            throw RedisProtocolException("bulk string too long: $length bytes (max ${ProtocolConstants.MAX_BULK_STRING_SIZE})")
         }
 
         val value = reader.readBytes(length)
         reader.discard(2) // \r\n
-        return Result.success(value)
+        return value
     }
 
-    private suspend fun readArray(reader: ByteReader): Result<List<RedisType>> {
-        val length = readInteger(reader).getOrElse { return Result.failure(it) }
+    private suspend fun readArray(reader: ByteReader): List<RedisType> {
+        val length = readInteger(reader)
         val elements = (0 until length).map {
-            read(reader).getOrElse { return Result.failure(it) }
+            read(reader)
         }
-        return Result.success(elements)
+        return elements
     }
 }
