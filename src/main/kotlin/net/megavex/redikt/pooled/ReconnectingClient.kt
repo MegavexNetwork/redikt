@@ -12,6 +12,10 @@ internal class ReconnectingClient(private val clientInit: suspend () -> RedisCli
     private val mutex = Mutex()
     private var isClosed = false
 
+    suspend fun init() {
+        client = clientInit()
+    }
+
     override suspend fun <T> exec(command: Command<T>): T = mutex.withLock {
         require(!isClosed) { "redis pool is closed" }
 
