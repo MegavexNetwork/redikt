@@ -15,7 +15,7 @@ public fun functionCall(
     keys: Collection<String> = emptyList(),
     args: Collection<String> = emptyList(),
     isReadOnly: Boolean = false
-): Command<RedisType> = command {
+): Command<RedisType<*>> = command {
     arguments {
         add(if (isReadOnly) "FCALL_RO" else "FCALL")
         add(function)

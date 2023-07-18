@@ -3,7 +3,7 @@ package net.megavex.redikt.protocol
 import net.megavex.redikt.buffer.ByteWriter
 
 internal object RedisTypeWriter {
-    suspend fun write(writer: ByteWriter, type: RedisType.Array<RedisType.BulkString>) {
+    suspend fun write(writer: ByteWriter, type: RedisType.Array<String, RedisType.BulkString>) {
         writer.writeAsciiChar(ProtocolConstants.ARRAY)
         writeInteger(writer, type.elements.size)
         writeCrlf(writer)

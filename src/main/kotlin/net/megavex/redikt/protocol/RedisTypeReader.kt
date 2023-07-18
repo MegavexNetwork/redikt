@@ -3,7 +3,7 @@ package net.megavex.redikt.protocol
 import net.megavex.redikt.buffer.ByteReader
 
 internal object RedisTypeReader {
-    suspend fun read(reader: ByteReader): RedisType {
+    suspend fun read(reader: ByteReader): RedisType<*> {
         return when (val type = reader.readAsciiChar()) {
             ProtocolConstants.SIMPLE_STRING -> RedisType.SimpleString(readSimpleString(reader))
             ProtocolConstants.ERROR -> RedisType.Error(readSimpleString(reader))
@@ -17,7 +17,15 @@ internal object RedisTypeReader {
                 }
             }
 
-            ProtocolConstants.ARRAY -> RedisType.Array(readArray(reader))
+            ProtocolConstants.ARRAY -> {
+                fun <T> genericsMoment(list: List<T>): RedisType.Array<T, RedisType<T>> {
+                    @Suppress("UNCHECKED_CAST")
+                    return RedisType.Array(list as List<RedisType<T>>)
+                }
+
+                genericsMoment(readArray(reader))
+            }
+
             else -> error("unknown redis type '$type'")
         }
     }
@@ -77,7 +85,7 @@ internal object RedisTypeReader {
         return value
     }
 
-    private suspend fun readArray(reader: ByteReader): List<RedisType> {
+    private suspend fun readArray(reader: ByteReader): List<RedisType<*>> {
         val length = readInteger(reader)
         val elements = (0 until length).map {
             read(reader)

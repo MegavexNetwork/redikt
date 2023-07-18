@@ -13,7 +13,7 @@ public fun <T> command(block: CommandBuilder<T>.() -> Unit): Command<T> {
 
 public class CommandBuilder<T> {
     private lateinit var arguments: List<RedisType.BulkString>
-    private lateinit var responseImpl: (RedisType) -> T
+    private lateinit var responseImpl: (RedisType<*>) -> T
 
     public fun arguments(capacity: Int = 4, init: ArgumentsBuilder.() -> Unit) {
         val builder = ArgumentsBuilder(capacity)
@@ -21,7 +21,7 @@ public class CommandBuilder<T> {
         arguments = builder.build()
     }
 
-    public fun response(response: (RedisType) -> T) {
+    public fun response(response: (RedisType<*>) -> T) {
         this.responseImpl = response
     }
 
@@ -51,10 +51,10 @@ public class CommandBuilder<T> {
 }
 
 private class CommandImpl<T>(
-    override val arguments: RedisType.Array<RedisType.BulkString>,
-    val responseImpl: (RedisType) -> T
+    override val arguments: RedisType.Array<String, RedisType.BulkString>,
+    val responseImpl: (RedisType<*>) -> T
 ) : Command<T> {
-    override fun response(type: RedisType): T {
+    override fun response(type: RedisType<*>): T {
         return responseImpl(type)
     }
 }

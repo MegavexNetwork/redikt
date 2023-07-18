@@ -10,12 +10,12 @@ public interface Command<T> {
     /**
      * The arguments of the command, including its name.
      */
-    public val arguments: RedisType.Array<RedisType.BulkString>
+    public val arguments: RedisType.Array<String, RedisType.BulkString>
 
     /**
      * Transforms the Redis server response of the [arguments] into type [T].
      *
      * @throws RedisErrorException if [type] is a [RedisType.Error] and couldn't be handled
      */
-    public fun response(type: RedisType): T
+    public fun response(type: RedisType<*>): T
 }
