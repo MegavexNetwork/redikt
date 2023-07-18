@@ -28,7 +28,7 @@ public sealed interface RedisType {
         }
 
         public operator fun get(index: Int): Byte {
-            return value.get(index)
+            return value[index]
         }
 
         override fun toString(): String {
@@ -46,4 +46,12 @@ public fun ByteArray.toBulkString(): RedisType.BulkString {
 
 public fun String.toBulkString(): RedisType.BulkString {
     return RedisType.BulkString(encodeToByteArray())
+}
+
+public fun RedisType.asNullableBulkString(): RedisType.BulkString? {
+    return when (this) {
+        is RedisType.BulkString -> this
+        is RedisType.NullBulkString -> null
+        else -> error("unexpected redis type: $this")
+    }
 }

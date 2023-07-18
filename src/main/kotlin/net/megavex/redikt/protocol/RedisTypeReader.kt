@@ -3,8 +3,6 @@ package net.megavex.redikt.protocol
 import net.megavex.redikt.buffer.ByteReader
 
 internal object RedisTypeReader {
-    class RedisProtocolException(override val message: String?) : Exception()
-
     suspend fun read(reader: ByteReader): RedisType {
         return when (val type = reader.readAsciiChar()) {
             ProtocolConstants.SIMPLE_STRING -> RedisType.SimpleString(readSimpleString(reader))
@@ -20,7 +18,7 @@ internal object RedisTypeReader {
             }
 
             ProtocolConstants.ARRAY -> RedisType.Array(readArray(reader))
-            else -> throw RedisProtocolException("unknown redis type '$type'")
+            else -> error("unknown redis type '$type'")
         }
     }
 
@@ -71,7 +69,7 @@ internal object RedisTypeReader {
         }
 
         if (length > ProtocolConstants.MAX_BULK_STRING_SIZE) {
-            throw RedisProtocolException("bulk string too long: $length bytes (max ${ProtocolConstants.MAX_BULK_STRING_SIZE})")
+            error("bulk string too long: $length bytes (max ${ProtocolConstants.MAX_BULK_STRING_SIZE})")
         }
 
         val value = reader.readBytes(length.toInt())
