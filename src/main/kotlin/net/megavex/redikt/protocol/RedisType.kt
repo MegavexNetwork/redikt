@@ -1,5 +1,7 @@
 package net.megavex.redikt.protocol
 
+import net.megavex.redikt.exception.RedisErrorException
+
 /**
  * Represents types of the Redis serialization protocol (RESP).
  *
@@ -16,9 +18,9 @@ public sealed interface RedisType<T> {
     }
 
     @JvmInline
-    public value class Error internal constructor(public val message: String) : RedisType<String> {
-        override fun unwrap(): String {
-            return message
+    public value class Error internal constructor(public val message: String) : RedisType<Nothing> {
+        override fun unwrap(): Nothing {
+            throw RedisErrorException(this)
         }
     }
 
