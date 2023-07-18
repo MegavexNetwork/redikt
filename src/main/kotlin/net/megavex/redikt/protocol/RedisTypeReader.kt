@@ -40,8 +40,8 @@ internal object RedisTypeReader {
         return builder.toString()
     }
 
-    private suspend fun readInteger(reader: ByteReader): Int {
-        var value = 0
+    private suspend fun readInteger(reader: ByteReader): Long {
+        var value = 0L
         var multiplier = 1
         var i = 0
 
@@ -66,7 +66,7 @@ internal object RedisTypeReader {
 
     private suspend fun readBulkString(reader: ByteReader): ByteArray? {
         val length = readInteger(reader)
-        if (length == -1) {
+        if (length == -1L) {
             return null
         }
 
@@ -74,7 +74,7 @@ internal object RedisTypeReader {
             throw RedisProtocolException("bulk string too long: $length bytes (max ${ProtocolConstants.MAX_BULK_STRING_SIZE})")
         }
 
-        val value = reader.readBytes(length)
+        val value = reader.readBytes(length.toInt())
         reader.discard(2) // \r\n
         return value
     }

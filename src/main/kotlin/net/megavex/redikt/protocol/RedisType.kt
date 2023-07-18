@@ -13,7 +13,7 @@ public sealed interface RedisType {
     public value class Error internal constructor(public val message: String) : RedisType
 
     @JvmInline
-    public value class Integer internal constructor(public val value: Int) : RedisType
+    public value class Integer internal constructor(public val value: Long) : RedisType
 
     public data object NullBulkString : RedisType
 
