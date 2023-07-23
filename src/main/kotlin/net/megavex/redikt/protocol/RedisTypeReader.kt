@@ -1,26 +1,33 @@
 package net.megavex.redikt.protocol
 
 import net.megavex.redikt.buffer.ByteReader
+import net.megavex.redikt.protocol.types.NullBulkString
+import net.megavex.redikt.protocol.types.OccupiedBulkString
+import net.megavex.redikt.protocol.types.RedisArray
+import net.megavex.redikt.protocol.types.RedisError
+import net.megavex.redikt.protocol.types.RedisInteger
+import net.megavex.redikt.protocol.types.RedisType
+import net.megavex.redikt.protocol.types.SimpleString
 
 internal object RedisTypeReader {
     suspend fun read(reader: ByteReader): RedisType<*> {
         return when (val type = reader.readAsciiChar()) {
-            ProtocolConstants.SIMPLE_STRING -> RedisType.SimpleString(readSimpleString(reader))
-            ProtocolConstants.ERROR -> RedisType.Error(readSimpleString(reader))
-            ProtocolConstants.INTEGER -> RedisType.Integer(readInteger(reader))
+            ProtocolConstants.SIMPLE_STRING -> SimpleString(readSimpleString(reader))
+            ProtocolConstants.ERROR -> RedisError(readSimpleString(reader))
+            ProtocolConstants.INTEGER -> RedisInteger(readInteger(reader))
             ProtocolConstants.BULK_STRING -> {
                 val value = readBulkString(reader)
                 if (value != null) {
-                    RedisType.BulkString(value)
+                    OccupiedBulkString(value, false)
                 } else {
-                    RedisType.NullBulkString
+                    NullBulkString
                 }
             }
 
             ProtocolConstants.ARRAY -> {
-                fun <T> genericsMoment(list: List<T>): RedisType.Array<T, RedisType<T>> {
+                fun <T> genericsMoment(list: List<T>): RedisArray<T, RedisType<T>> {
                     @Suppress("UNCHECKED_CAST")
-                    return RedisType.Array(list as List<RedisType<T>>)
+                    return RedisArray(list as List<RedisType<T>>)
                 }
 
                 genericsMoment(readArray(reader))

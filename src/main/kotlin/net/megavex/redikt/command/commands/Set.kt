@@ -6,7 +6,11 @@ import net.megavex.redikt.command.types.ExistenceModifier
 import net.megavex.redikt.command.types.ExpiryOption
 import net.megavex.redikt.command.types.apply
 import net.megavex.redikt.exception.RedisErrorException
-import net.megavex.redikt.protocol.RedisType
+import net.megavex.redikt.protocol.types.BulkString
+import net.megavex.redikt.protocol.types.NullBulkString
+import net.megavex.redikt.protocol.types.OccupiedBulkString
+import net.megavex.redikt.protocol.types.RedisError
+import net.megavex.redikt.protocol.types.SimpleString
 
 /**
  * Wrapper for the `SET` command.
@@ -14,8 +18,8 @@ import net.megavex.redikt.protocol.RedisType
  * @see [SET documentation](https://redis.io/commands/set/)
  */
 public fun set(
-    key: RedisType.BulkString,
-    value: RedisType.BulkString,
+    key: OccupiedBulkString,
+    value: OccupiedBulkString,
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
 ): Command<Boolean> = command {
@@ -29,9 +33,9 @@ public fun set(
 
     response { type ->
         when (type) {
-            is RedisType.SimpleString -> true
-            is RedisType.NullBulkString -> false
-            is RedisType.Error -> throw RedisErrorException(type)
+            is SimpleString -> true
+            is NullBulkString -> false
+            is RedisError -> throw RedisErrorException(type)
             else -> error("unexpected SET response: $type")
         }
     }
@@ -43,11 +47,11 @@ public fun set(
  * @see [SET documentation](https://redis.io/commands/set/)
  */
 public fun setAndGet(
-    key: RedisType.BulkString,
-    value: RedisType.BulkString,
+    key: OccupiedBulkString,
+    value: OccupiedBulkString,
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
-): Command<RedisType.BulkString?> = command {
+): Command<BulkString> = command {
     arguments {
         add("SET")
         add(key)
@@ -59,9 +63,8 @@ public fun setAndGet(
 
     response { type ->
         when (type) {
-            is RedisType.BulkString -> type
-            is RedisType.NullBulkString -> null
-            is RedisType.Error -> throw RedisErrorException(type)
+            is BulkString -> type
+            is RedisError -> throw RedisErrorException(type)
             else -> error("unexpected SET response: $type")
         }
     }

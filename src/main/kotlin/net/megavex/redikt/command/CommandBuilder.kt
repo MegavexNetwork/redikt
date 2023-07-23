@@ -1,6 +1,8 @@
 package net.megavex.redikt.command
 
-import net.megavex.redikt.protocol.RedisType
+import net.megavex.redikt.protocol.types.OccupiedBulkString
+import net.megavex.redikt.protocol.types.RedisArray
+import net.megavex.redikt.protocol.types.RedisType
 
 /**
  * DSL builder for [Command]s.
@@ -12,7 +14,7 @@ public fun <T> command(block: CommandBuilder<T>.() -> Unit): Command<T> {
 }
 
 public class CommandBuilder<T> {
-    private lateinit var arguments: List<RedisType.BulkString>
+    private lateinit var arguments: List<OccupiedBulkString>
     private lateinit var responseImpl: (RedisType<*>) -> T
 
     public fun arguments(capacity: Int = 4, init: ArgumentsBuilder.() -> Unit) {
@@ -26,32 +28,32 @@ public class CommandBuilder<T> {
     }
 
     internal fun build(): Command<T> {
-        return CommandImpl(RedisType.Array(arguments), responseImpl)
+        return CommandImpl(RedisArray(arguments), responseImpl)
     }
 
     public class ArgumentsBuilder(capacity: Int) {
-        private val args = ArrayList<RedisType.BulkString>(capacity)
+        private val args = ArrayList<OccupiedBulkString>(capacity)
 
-        public fun add(value: RedisType.BulkString) {
+        public fun add(value: OccupiedBulkString) {
             args += value
         }
 
         public fun add(value: String) {
-            add(RedisType.BulkString(value.toByteArray()))
+            add(OccupiedBulkString(value.toByteArray()))
         }
 
         public fun add(value: ByteArray) {
-            add(RedisType.BulkString(value))
+            add(OccupiedBulkString(value))
         }
 
-        internal fun build(): List<RedisType.BulkString> {
+        internal fun build(): List<OccupiedBulkString> {
             return args
         }
     }
 }
 
 private class CommandImpl<T>(
-    override val arguments: RedisType.Array<String, RedisType.BulkString>,
+    override val arguments: RedisArray<String?, OccupiedBulkString>,
     val responseImpl: (RedisType<*>) -> T
 ) : Command<T> {
     override fun response(type: RedisType<*>): T {

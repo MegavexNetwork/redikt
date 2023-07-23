@@ -2,7 +2,7 @@ package net.megavex.redikt.command.commands
 
 import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
-import net.megavex.redikt.protocol.RedisType
+import net.megavex.redikt.protocol.types.RedisType
 
 /**
  * Wrapper for the `FCALL` and `FCALL_RO` commands.
