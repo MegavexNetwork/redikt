@@ -1,6 +1,5 @@
 package net.megavex.redikt.pool
 
-import net.megavex.redikt.RedisExecutor
 import net.megavex.redikt.command.Command
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -11,7 +10,7 @@ internal class PooledRedisExecutorImpl(private val clients: List<ReconnectingCli
         return nextClient().exec(command)
     }
 
-    override fun nextClient(): RedisExecutor {
+    override fun nextClient(): ReconnectingClient {
         val i = index.getAndUpdate { (it + 1) % clients.size }
         return clients[i]
     }

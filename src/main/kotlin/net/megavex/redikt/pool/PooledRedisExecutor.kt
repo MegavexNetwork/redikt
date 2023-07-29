@@ -19,6 +19,8 @@ import kotlin.contracts.contract
  * @throws RedisConnectionException if a client in the pool couldn't connect
  */
 public suspend fun PooledRedisExecutor(size: Int, clientInit: suspend () -> RedisClient): PooledRedisExecutor {
+    require(size > 0) { "invalid pool size $size" }
+
     val clients = ArrayList<ReconnectingClient>(size)
     try {
         repeat(size) {

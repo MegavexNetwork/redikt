@@ -8,7 +8,8 @@ import net.megavex.redikt.command.Command
 import net.megavex.redikt.exception.RedisConnectionException
 
 internal class ReconnectingClient(private val clientInit: suspend () -> RedisClient) : RedisExecutor {
-    private var client: RedisClient? = null
+    internal var client: RedisClient? = null
+        private set
     private val mutex = Mutex()
     private var isClosed = false
 
