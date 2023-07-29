@@ -1,4 +1,4 @@
-package net.megavex.redikt.pooled
+package net.megavex.redikt.pool
 
 import net.megavex.redikt.RedisExecutor
 import net.megavex.redikt.client.RedisClient

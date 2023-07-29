@@ -1,4 +1,4 @@
-package net.megavex.redikt.pooled
+package net.megavex.redikt.pool
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
