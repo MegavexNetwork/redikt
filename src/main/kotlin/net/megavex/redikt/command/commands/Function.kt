@@ -2,7 +2,26 @@ package net.megavex.redikt.command.commands
 
 import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
+import net.megavex.redikt.protocol.types.RedisSimpleString
 import net.megavex.redikt.protocol.types.RedisType
+
+/**
+ * Wrapper for the 'FUNCTION LOAD' command.
+ *
+ * @see [FUNCTION LOAD documentation](https://redis.io/commands/function-load/)
+ */
+public fun functionLoad(functionCode: String, replace: Boolean = false): Command<String> = command {
+    arguments(4) {
+        add("FUNCTION")
+        add("LOAD")
+        if (replace) {
+            add("REPLACE")
+        }
+        add(functionCode)
+    }
+
+    response { (it as RedisSimpleString).value() }
+}
 
 /**
  * Wrapper for the `FCALL` and `FCALL_RO` commands.
@@ -16,7 +35,7 @@ public fun functionCall(
     args: Collection<String> = emptyList(),
     isReadOnly: Boolean = false
 ): Command<RedisType<*>> = command {
-    arguments {
+    arguments(3 + keys.size + args.size) {
         add(if (isReadOnly) "FCALL_RO" else "FCALL")
         add(function)
         add(keys.size.toString())
