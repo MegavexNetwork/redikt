@@ -27,4 +27,4 @@ jobs:
       - name: Build the project
         uses: gradle/gradle-build-action@v1
         with:
-          arguments: build -Predis.uri=redis://redis
+          arguments: build -Predis.uri=redis://localhost
