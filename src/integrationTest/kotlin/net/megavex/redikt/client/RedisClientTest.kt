@@ -18,7 +18,7 @@ internal class RedisClientTest {
 
         val selectorManager = SelectorManager(Dispatchers.IO)
         val client = RedisClient(selectorManager, RedisEndpoint(URI(uri)))
-        assertEquals("PONGG", client.exec(ping()).value())
+        assertEquals("PONG", client.exec(ping()).value())
         client.close()
         selectorManager.close()
     }
