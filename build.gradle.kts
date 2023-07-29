@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.0"
     `maven-publish`
+    `jvm-test-suite`
 }
 
 group = "net.megavex"
@@ -15,8 +16,32 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        register<JvmTestSuite>("integrationTest") {
+            dependencies {
+                implementation(project())
+            }
+        }
+    }
+}
+
+@Suppress("UnstableApiUsage")
+tasks.named("check") {
+    dependsOn(testing.suites.named("integrationTest"))
+}
+
+val integrationTestImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.testImplementation.get())
+}
+
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.getByName<Test>("integrationTest") {
+    project.findProperty("redis.uri")?.let { systemProperty("redis.uri", it) }
 }
 
 kotlin {
