@@ -10,6 +10,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis/redis-stack-server:7.0.6-RC9
+        ports:
+          - 6379:6379
+
     steps:
       - uses: actions/checkout@v3
       - uses: gradle/wrapper-validation-action@v1
@@ -20,3 +26,5 @@ jobs:
           distribution: 'temurin'
       - name: Build the project
         uses: gradle/gradle-build-action@v1
+        with:
+          arguments: build -Predis.uri=redis://redis
