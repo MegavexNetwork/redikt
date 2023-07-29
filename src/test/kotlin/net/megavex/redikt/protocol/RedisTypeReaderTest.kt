@@ -22,7 +22,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(SimpleString("OK"), type)
-        assertEquals("OK", type.unwrap())
+        assertEquals("OK", type.value())
     }
 
     @Test
@@ -32,7 +32,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(RedisError("Error message"), type)
-        assertThrows<RedisErrorException> { type.unwrap() }
+        assertThrows<RedisErrorException> { type.value() }
     }
 
     @Test
@@ -42,7 +42,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(RedisInteger(69420), type)
-        assertEquals(69420L, type.unwrap())
+        assertEquals(69420L, type.value())
     }
 
     @Test
@@ -52,7 +52,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(RedisInteger(-50), type)
-        assertEquals(-50L, type.unwrap())
+        assertEquals(-50L, type.value())
     }
 
     @Test
@@ -62,7 +62,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(OccupiedBulkString("hello".encodeToByteArray(), false), type)
-        assertEquals("hello", type.unwrap())
+        assertEquals("hello", type.value())
     }
 
     @Test
@@ -72,7 +72,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(NullBulkString, type)
-        assertEquals(null, type.unwrap())
+        assertEquals(null, type.value())
     }
 
     @Test
@@ -82,7 +82,7 @@ internal class RedisTypeReaderTest {
             RedisTypeReader.read(TestByteReader(encoded))
         }
         assertEquals(RedisArray(listOf(OccupiedBulkString("hello"), NullBulkString, OccupiedBulkString("world"))), type)
-        assertEquals(listOf("hello", null, "world"), type.unwrap())
+        assertEquals(listOf("hello", null, "world"), type.value())
     }
 
     private class TestByteReader(encoded: String) : ByteReader {

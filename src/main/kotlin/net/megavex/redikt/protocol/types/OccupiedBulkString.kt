@@ -7,7 +7,7 @@ public sealed interface BulkString : RedisType<String?> {
 }
 
 public data object NullBulkString : BulkString {
-    override fun unwrap(): String? {
+    override fun value(): String? {
         return null
     }
 }
@@ -39,7 +39,7 @@ public class OccupiedBulkString : BulkString {
         return value[index]
     }
 
-    override fun unwrap(): String {
+    override fun value(): String {
         return asString()
     }
 
