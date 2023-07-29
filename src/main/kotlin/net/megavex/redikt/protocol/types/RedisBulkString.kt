@@ -1,18 +1,36 @@
 package net.megavex.redikt.protocol.types
 
-public sealed interface BulkString : RedisType<String?> {
-    public fun orNull(): OccupiedBulkString? {
-        return this as? OccupiedBulkString
+public fun RedisBulkString(value: ByteArray?): RedisBulkString {
+    return if (value != null) {
+        OccupiedBulkString(value)
+    } else {
+        NullBulkString
     }
 }
 
-public data object NullBulkString : BulkString {
+public fun RedisBulkString(value: String?): RedisBulkString {
+    return if (value != null) {
+        OccupiedBulkString(value)
+    } else {
+        NullBulkString
+    }
+}
+
+public sealed interface RedisBulkString : RedisType<String?> {
+    public fun asBytes(): ByteArray?
+}
+
+public data object NullBulkString : RedisBulkString {
     override fun value(): String? {
+        return null
+    }
+
+    override fun asBytes(): ByteArray? {
         return null
     }
 }
 
-public class OccupiedBulkString : BulkString {
+public class OccupiedBulkString : RedisBulkString {
     internal val value: ByteArray
 
     internal constructor(value: ByteArray, @Suppress("UNUSED_PARAMETER") dummy: Boolean) {
@@ -27,20 +45,16 @@ public class OccupiedBulkString : BulkString {
         this.value = value.encodeToByteArray()
     }
 
-    public fun asBytes(): ByteArray {
-        return value.copyOf()
+    override fun value(): String {
+        return value.decodeToString()
     }
 
-    public fun asString(): String {
-        return value.decodeToString()
+    public override fun asBytes(): ByteArray {
+        return value.copyOf()
     }
 
     public operator fun get(index: Int): Byte {
         return value[index]
-    }
-
-    override fun value(): String {
-        return asString()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -52,6 +66,6 @@ public class OccupiedBulkString : BulkString {
     }
 
     override fun toString(): String {
-        return "BulkString(value=${asString()})"
+        return "BulkString(value=${value()})"
     }
 }

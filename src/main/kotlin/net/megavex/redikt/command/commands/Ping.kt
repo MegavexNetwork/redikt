@@ -4,7 +4,7 @@ import net.megavex.redikt.command.Command
 import net.megavex.redikt.command.command
 import net.megavex.redikt.exception.RedisErrorException
 import net.megavex.redikt.protocol.types.RedisError
-import net.megavex.redikt.protocol.types.SimpleString
+import net.megavex.redikt.protocol.types.RedisSimpleString
 
 private val pingCommand = command {
     arguments(1) {
@@ -13,7 +13,7 @@ private val pingCommand = command {
 
     response { type ->
         when (type) {
-            is SimpleString -> type
+            is RedisSimpleString -> type
             is RedisError -> throw RedisErrorException(type)
             else -> error("unexpected PING response: $type")
         }
@@ -25,6 +25,6 @@ private val pingCommand = command {
  *
  * @see [PING documentation](https://redis.io/commands/ping/)
  */
-public fun ping(): Command<SimpleString> {
+public fun ping(): Command<RedisSimpleString> {
     return pingCommand
 }

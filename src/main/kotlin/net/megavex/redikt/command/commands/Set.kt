@@ -6,11 +6,11 @@ import net.megavex.redikt.command.types.ExistenceModifier
 import net.megavex.redikt.command.types.ExpiryOption
 import net.megavex.redikt.command.types.apply
 import net.megavex.redikt.exception.RedisErrorException
-import net.megavex.redikt.protocol.types.BulkString
+import net.megavex.redikt.protocol.types.RedisBulkString
 import net.megavex.redikt.protocol.types.NullBulkString
 import net.megavex.redikt.protocol.types.OccupiedBulkString
 import net.megavex.redikt.protocol.types.RedisError
-import net.megavex.redikt.protocol.types.SimpleString
+import net.megavex.redikt.protocol.types.RedisSimpleString
 
 /**
  * Wrapper for the `SET` command.
@@ -33,7 +33,7 @@ public fun set(
 
     response { type ->
         when (type) {
-            is SimpleString -> true
+            is RedisSimpleString -> true
             is NullBulkString -> false
             is RedisError -> throw RedisErrorException(type)
             else -> error("unexpected SET response: $type")
@@ -51,7 +51,7 @@ public fun setAndGet(
     value: OccupiedBulkString,
     existenceMod: ExistenceModifier? = null,
     expiry: ExpiryOption? = null
-): Command<BulkString> = command {
+): Command<RedisBulkString> = command {
     arguments {
         add("SET")
         add(key)
@@ -63,7 +63,7 @@ public fun setAndGet(
 
     response { type ->
         when (type) {
-            is BulkString -> type
+            is RedisBulkString -> type
             is RedisError -> throw RedisErrorException(type)
             else -> error("unexpected SET response: $type")
         }

@@ -7,8 +7,8 @@ import net.megavex.redikt.protocol.types.NullBulkString
 import net.megavex.redikt.protocol.types.OccupiedBulkString
 import net.megavex.redikt.protocol.types.RedisArray
 import net.megavex.redikt.protocol.types.RedisError
-import net.megavex.redikt.protocol.types.RedisInteger
-import net.megavex.redikt.protocol.types.SimpleString
+import net.megavex.redikt.protocol.types.RedisInt
+import net.megavex.redikt.protocol.types.RedisSimpleString
 import org.junit.jupiter.api.assertThrows
 import java.nio.ByteBuffer
 import kotlin.test.Test
@@ -21,7 +21,7 @@ internal class RedisTypeReaderTest {
         val type = runBlocking {
             RedisTypeReader.read(TestByteReader(encoded))
         }
-        assertEquals(SimpleString("OK"), type)
+        assertEquals(RedisSimpleString("OK"), type)
         assertEquals("OK", type.value())
     }
 
@@ -41,7 +41,7 @@ internal class RedisTypeReaderTest {
         val type = runBlocking {
             RedisTypeReader.read(TestByteReader(encoded))
         }
-        assertEquals(RedisInteger(69420), type)
+        assertEquals(RedisInt(69420), type)
         assertEquals(69420L, type.value())
     }
 
@@ -51,7 +51,7 @@ internal class RedisTypeReaderTest {
         val type = runBlocking {
             RedisTypeReader.read(TestByteReader(encoded))
         }
-        assertEquals(RedisInteger(-50), type)
+        assertEquals(RedisInt(-50), type)
         assertEquals(-50L, type.value())
     }
 

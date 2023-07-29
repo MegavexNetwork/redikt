@@ -5,16 +5,16 @@ import net.megavex.redikt.protocol.types.NullBulkString
 import net.megavex.redikt.protocol.types.OccupiedBulkString
 import net.megavex.redikt.protocol.types.RedisArray
 import net.megavex.redikt.protocol.types.RedisError
-import net.megavex.redikt.protocol.types.RedisInteger
+import net.megavex.redikt.protocol.types.RedisInt
 import net.megavex.redikt.protocol.types.RedisType
-import net.megavex.redikt.protocol.types.SimpleString
+import net.megavex.redikt.protocol.types.RedisSimpleString
 
 internal object RedisTypeReader {
     suspend fun read(reader: ByteReader): RedisType<*> {
         return when (val type = reader.readAsciiChar()) {
-            ProtocolConstants.SIMPLE_STRING -> SimpleString(readSimpleString(reader))
+            ProtocolConstants.SIMPLE_STRING -> RedisSimpleString(readSimpleString(reader))
             ProtocolConstants.ERROR -> RedisError(readSimpleString(reader))
-            ProtocolConstants.INTEGER -> RedisInteger(readInteger(reader))
+            ProtocolConstants.INTEGER -> RedisInt(readInteger(reader))
             ProtocolConstants.BULK_STRING -> {
                 val value = readBulkString(reader)
                 if (value != null) {
